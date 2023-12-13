@@ -1,6 +1,6 @@
 {
   "name": "@seneca/progress",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "dist/progress.js",
   "type": "commonjs",
   "types": "dist/progress.d.ts",
