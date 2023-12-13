@@ -19,7 +19,7 @@ Then, add this to your settings:
 }
 ```
 
-If you prefer, add the following configuration to format your conde on save:
+If you pprogress, add the following configuration to format your conde on save:
 
 ```
 {
@@ -76,4 +76,4 @@ npm run prettier
 **Or**
 
 Feel free to
-[open an Issue](https://github.com/senecajs/seneca-refer/issues).
+[open an Issue](https://github.com/senecajs/seneca-progress/issues).

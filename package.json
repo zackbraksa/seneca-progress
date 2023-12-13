@@ -1,19 +1,19 @@
 {
-  "name": "@seneca/refer",
-  "version": "0.6.0",
-  "main": "dist/refer.js",
+  "name": "@seneca/progress",
+  "version": "0.0.1",
+  "main": "dist/progress.js",
   "type": "commonjs",
-  "types": "dist/refer.d.ts",
-  "description": "User Referral business logic plugin for the Seneca platform.",
-  "homepage": "https://github.com/senecajs/seneca-refer",
+  "types": "dist/progress.d.ts",
+  "description": "Workflow progress record plugin for the Seneca platform.",
+  "homepage": "https://github.com/senecajs/seneca-progress",
   "keywords": [
     "seneca",
-    "refer"
+    "progress"
   ],
   "author": "Richard Rodger - richardrodger.com",
   "repository": {
     "type": "git",
-    "url": "git://github.com/senecajs/seneca-refer.git"
+    "url": "git://github.com/senecajs/seneca-progress.git"
   },
   "scripts": {
     "prettier": "prettier --write .",
@@ -36,7 +36,7 @@
     "LICENSE"
   ],
   "engines": {
-    "node": ">=14"
+    "node": ">=16"
   },
   "devDependencies": {
     "@seneca/maintain": "^0.0.22",
