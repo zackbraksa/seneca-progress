@@ -36,14 +36,16 @@ function Progress(options) {
                 start: Skip(0),
                 end: Skip(0),
                 code: Skip(String),
+                owner: Skip(String),
                 ref: Skip(String),
+                user_id: Skip(String),
                 custom: Skip(Object),
                 note: Skip(String),
                 expire: Skip(Number), // Expires in millis fron now.
             },
             UpdateProgress: {
                 id: String,
-                how: Exact('step', 'val'),
+                how: Exact('step', 'val', 'set'),
                 val: Skip(Number),
                 status: Skip(String),
                 code: Skip(String),
@@ -69,6 +71,8 @@ function Progress(options) {
             end: null == msg.end ? options.end : msg.end,
             code: msg.code,
             ref: msg.ref,
+            owner: msg.owner,
+            user_id: msg.user_id,
             custom: msg.custom,
             note: msg.note,
             expire: msg.expire,
@@ -94,7 +98,7 @@ function Progress(options) {
         const id = msg.id;
         const full = msg.full;
         const how = msg.how;
-        const msgval = msg.val;
+        const entryval = msg.val;
         const status = msg.status;
         const code = msg.code;
         const note = msg.note;
@@ -107,7 +111,10 @@ function Progress(options) {
                 stepval = progress.step;
             }
             else if ('val' === how) {
-                stepval = msgval;
+                stepval = entryval;
+            }
+            else if ('set' === how) {
+                stepval = 0;
             }
             else {
                 out.why = 'invalid-how';
@@ -120,9 +127,17 @@ function Progress(options) {
                 code,
                 note,
                 custom,
-                when: Date.now()
+                how,
+                entryval,
+                user_id: progress.user_id,
+                owner: progress.owner,
+                ref: progress.ref,
+                when: Date.now(),
             });
             progress.val += stepval;
+            if ('set' === how) {
+                progress.val = entryval;
+            }
             // Can't go beyond end.
             if (0 < progress.end && progress.end < progress.val) {
                 progress.val = progress.end;
@@ -133,7 +148,10 @@ function Progress(options) {
             if (null != status) {
                 progress.status = status;
             }
-            entry = await entry.save$();
+            entry = await entry.save$({
+                status: progress.status,
+                val: progress.val
+            });
             progress = await progress.save$();
             out.item = progress;
             out.entry = entry;

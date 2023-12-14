@@ -66,7 +66,9 @@ function Progress(this: any, options: ProgressOptions) {
         start: Skip(0), // Start value; Undefined (skipped) means use default from options.
         end: Skip(0), // Start value; Undefined (skipped) means use default from options.
         code: Skip(String), // Custom code string.
-        ref: Skip(String), // Reference to the "owner" (E.g. an entity id).
+        owner: Skip(String), // Reference to the "owner" (E.g. an entity id).
+        ref: Skip(String), // Reference to an associated entity.
+        user_id: Skip(String), // Reference to an associated user.
         custom: Skip(Object), // Custom data.
         note: Skip(String), // Custom note string.
         expire: Skip(Number), // Expires in millis fron now.
@@ -74,7 +76,7 @@ function Progress(this: any, options: ProgressOptions) {
 
       UpdateProgress: {
         id: String,
-        how: Exact('step', 'val'), // step=>incr by step value, val=>custom value.
+        how: Exact('step', 'val', 'set'), // step=>incr by step value, val=>custom value.
         val: Skip(Number),
         status: Skip(String), // Set status manually.
         code: Skip(String), // Custom code string for Entry.
@@ -106,6 +108,8 @@ function Progress(this: any, options: ProgressOptions) {
       end: null == msg.end ? options.end : msg.end,
       code: msg.code,
       ref: msg.ref,
+      owner: msg.owner,
+      user_id: msg.user_id,
       custom: msg.custom,
       note: msg.note,
       expire: msg.expire,
@@ -142,7 +146,7 @@ function Progress(this: any, options: ProgressOptions) {
     const id = msg.id
     const full = msg.full
     const how = msg.how
-    const msgval = msg.val
+    const entryval = msg.val
     const status = msg.status
     const code = msg.code
     const note = msg.note
@@ -158,7 +162,10 @@ function Progress(this: any, options: ProgressOptions) {
         stepval = progress.step
       }
       else if ('val' === how) {
-        stepval = msgval
+        stepval = entryval
+      }
+      else if ('set' === how) {
+        stepval = 0
       }
       else {
         out.why = 'invalid-how'
@@ -172,10 +179,19 @@ function Progress(this: any, options: ProgressOptions) {
         code,
         note,
         custom,
-        when: Date.now()
+        how,
+        entryval,
+        user_id: progress.user_id,
+        owner: progress.owner,
+        ref: progress.ref,
+        when: Date.now(),
       })
 
       progress.val += stepval
+
+      if ('set' === how) {
+        progress.val = entryval
+      }
 
       // Can't go beyond end.
       if (0 < progress.end && progress.end < progress.val) {
@@ -189,7 +205,10 @@ function Progress(this: any, options: ProgressOptions) {
         progress.status = status
       }
 
-      entry = await entry.save$()
+      entry = await entry.save$({
+        status: progress.status,
+        val: progress.val
+      })
       progress = await progress.save$()
 
       out.item = progress
