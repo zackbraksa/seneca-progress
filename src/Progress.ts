@@ -286,7 +286,7 @@ function Progress(this: any, options: ProgressOptions) {
     if (full) {
       const eq = {
         progress_id: progress.id,
-        sort$: 'when'
+        sort$: { 'when': 1 }
       }
       const list = await makeEntryEnt(seneca).list$(eq)
       return list
