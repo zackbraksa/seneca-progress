@@ -52,7 +52,7 @@
   },
   "peerDependencies": {
     "@seneca/entity-util": ">=1",
-    "seneca": ">=3",
+    "seneca": ">=3||>=4.0.0-rc2",
     "seneca-entity": ">=18",
     "seneca-promisify": ">=3"
   }
